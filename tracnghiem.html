@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>Trắc nghiệm 20 câu</title>
+<style>
+body { font-family: Arial; padding: 20px; }
+.question { margin-bottom: 25px; }
+button { margin: 5px 0; display: block; text-align: left; }
+.correct { color: green; }
+.wrong { color: red; }
+</style>
+</head>
+<body>
+<h2>Bài trắc nghiệm 20 câu</h2>
+<div id="quiz"></div>
+
+<script>
+function shuffle(array) {
+  return array.sort(() => Math.random() - 0.5);
+}
+
+const questions = [
+{
+q: "Đồng chí cho biết Thủ đoạn chiến lược “diễn biến hòa bình” của các thế lực thù địch chống phá cách mạng Việt Nam là gì?",
+answers: [
+"Chống phá trên lĩnh vực chính trị; chống phá trên lĩnh vực tư tưởng, văn hóa; chống phá trên lĩnh vực xã hội; chống phá trên lĩnh vực quốc phòng, an ninh; chống phá trên lĩnh vực đối ngoại",
+"Chống phá trên lĩnh vực chính trị; chống phá trên lĩnh vực kinh tế; chống phá trên lĩnh vực tư tưởng, văn hóa; chống phá trên lĩnh vực xã hội; chống phá trên lĩnh vực quốc phòng, an ninh",
+"Chống phá trên lĩnh vực chính trị; chống phá trên lĩnh vực kinh tế; chống phá trên lĩnh vực tư tưởng, văn hóa; chống phá trên lĩnh vực quốc phòng, an ninh; chống phá trên lĩnh vực đối ngoại",
+"Chống phá trên lĩnh vực chính trị; chống phá trên lĩnh vực kinh tế; chống phá trên lĩnh vực tư tưởng, văn hóa; chống phá trên lĩnh vực xã hội; chống phá trên lĩnh vực quốc phòng, an ninh; chống phá trên lĩnh vực đối ngoại"
+],
+correct: 3
+},
+{
+q: "Đồng chí cho biết Nghị quyết Đại hội đại biểu toàn quốc lần thứ XIII của Đảng xác định mục tiêu cụ thể của nước ta đến năm 2025 là gì?",
+answers: [
+"Kỷ niệm 50 năm giải phóng hoàn toàn Miền Nam, thống nhất đất nước: Là nước đang phát triển, có công nghiệp hiện đại, có thu nhập trung bình thấp",
+"Kỷ niệm 50 năm giải phóng hoàn toàn Miền Nam, thống nhất đất nước: Là nước đang phát triển, có công nghiệp theo hướng hiện đại, vượt qua mức thu nhập trung bình thấp",
+"Kỷ niệm 50 năm giải phóng hoàn toàn Miền Nam, thống nhất đất nước: Là nước phát triển, có công nghiệp hiện đại, thu nhập trung bình cao",
+"Kỷ niệm 50 năm giải phóng hoàn toàn Miền Nam, thống nhất đất nước: Là nước đang phát triển, có công nghiệp theo hướng hiện đại, có mức thu nhập trung bình cao"
+],
+correct: 1
+},
+{
+q: "Đồng chí cho biết chức năng của công tác tuyên truyền miệng?",
+answers: [
+"Phổ biến thông tin. Định hướng tư tưởng. Hướng dẫn hành động",
+"Phổ biến thông tin. Định hướng tư tưởng. Cổ vũ hành động",
+"Phổ biến thông tin. Định hướng nhận thức. Cổ vũ hành động",
+"Phổ biến thông tin. Định hướng nhận thức. Hướng dẫn hành động"
+],
+correct: 1
+},
+{
+q: "Đồng chí cho biết Chỉ thị số 366/CT-ĐU của Ban Thường vụ Đảng ủy Sư đoàn về xây dựng “chi bộ bốn tốt”, “đảng bộ cơ sở bốn tốt\" xác định bao nhiêu nhiệm vụ, giải pháp?",
+answers: ["4 nhiệm vụ, giải pháp","5 nhiệm vụ, giải pháp","6 nhiệm vụ, giải pháp","7 nhiệm vụ, giải pháp"],
+correct: 1
+},
+{
+q: "Đồng chí cho biết tên gọi Kết luận số 21-KL/TW của Ban Chấp hành Trung ương Đảng khóa XIII là gì?",
+answers: [
+"Về đẩy mạnh xây dựng, chỉnh đốn đảng; kiên quyết ngăn chặn, đẩy lùi, xử lý nghiêm cán bộ, đảng viên suy thoái...",
+"Về đẩy mạnh xây dựng, chỉnh đốn đảng và hệ thống chính trị; ngăn chặn, đẩy lùi...",
+"Về đẩy mạnh xây dựng, chỉnh đốn đảng và hệ thống chính trị; kiên quyết ngăn chặn, đẩy lùi, xử lý nghiêm...",
+"Về đẩy mạnh xây dựng, chỉnh đốn đảng và hệ thống chính trị; kiên quyết đẩy lùi..."
+],
+correct: 2
+},
+{
+q: "Đồng chí cho biết Quy định số 144-QĐ/TW ngày 09/5/2024 của Bộ Chính trị có mấy nội dung cơ bản?",
+answers: ["04 nội dung","05 nội dung","06 nội dung","07 nội dung"],
+correct: 1
+},
+{
+q: "Đồng chí cho biết có mấy nguyên tắc tiến hành công tác tuyên truyền miệng?",
+answers: ["04 nhiệm vụ","05 nhiệm vụ","06 nhiệm vụ","10 nhiệm vụ"],
+correct: 1
+},
+{
+q: "Đồng chí khái niệm của công tác tuyên truyền miệng là gì?",
+answers: [
+"Tuyên truyền miệng là một hình thức tuyên truyền được tiến hành thông qua sự giao tiếp trực tiếp giữa người nói...",
+"Tuyên truyền miệng là một hình thức tuyên truyền được tiến hành thông qua sự giao tiếp bằng lời nói trực tiếp...",
+"Tuyên truyền miệng là một hình thức tuyên truyền được tiến hành thông qua sự giao tiếp thực tiễn bằng lời nói...",
+"Tuyên truyền miệng là một hình thức tuyên truyền được tiến hành thông qua nói chuyện bằng lời nói trực tiếp..."
+],
+correct: 1
+},
+{
+q: "Đồng chí cho biết chức năng Phòng Hồ Chí Minh theo Quy chế tổ chức hoạt động của các thiết chế văn hóa trong Quân đội nhân dân Việt Nam?",
+answers: [
+"Tổ chức các hoạt động văn hoá - văn nghệ...",
+"Hướng dẫn, tổ chức các hoạt động văn hoá - văn nghệ...",
+"Chỉ đạo, tổ chức các hoạt động văn hoá - văn nghệ...",
+"Tham gia, tổ chức, hướng dẫn các hoạt động văn hoá - văn nghệ..."
+],
+correct: 1
+},
+{
+q: "Đồng chí cho biết báo cáo viên kiêm nhiệm ở cấp tiểu đoàn, đại đội và tương đương là ai?",
+answers: [
+"Chính trị viên đảm nhiệm",
+"Chính trị viên hoặc Chính trị viên phó đảm nhiệm",
+"Bí thư Đảng ủy đảm nhiệm",
+"Phó bí thư đảm nhiệm"
+],
+correct: 1
+}
+];
+
+// Trộn câu hỏi nhưng giữ số thứ tự 1→10
+shuffle(questions);
+
+// Hiển thị câu hỏi 1-10
+questions.forEach((q,index)=>{
+  const div = document.createElement("div");
+  div.classList.add("question");
+
+  const title = document.createElement("p");
+  title.innerText = `Câu ${index+1}: ${q.q}`;
+  div.appendChild(title);
+
+  // Xáo trộn đáp án trong câu
+  let answers = q.answers.map((a,i)=>({text:a,correct:i===q.correct,btn:null}));
+  shuffle(answers);
+
+  answers.forEach((ans,i)=>{
+    const btn = document.createElement("button");
+    btn.innerText = String.fromCharCode(65+i)+". "+ans.text;
+
+    btn.onclick = ()=>{
+      if(ans.correct){
+        btn.classList.add("correct");
+        btn.innerText = String.fromCharCode(65+i)+". "+ans.text+" ✅ Đúng";
+        answers.forEach(a=>a.btn.disabled=true); // khóa toàn bộ khi đúng
+      } else {
+        btn.classList.add("wrong");
+        btn.innerText = String.fromCharCode(65+i)+". "+ans.text+" ❌ Sai";
+      }
+    };
+    ans.btn = btn;
+    div.appendChild(btn);
+  });
+
+  document.getElementById("quiz").appendChild(div);
+});
+</script>
+<script>
+const questions2 = [
+{
+q: "Đồng chí cho biết bước thứ ba trong quy trình tiến hành công tác quản lý tư tưởng quân nhân?",
+answers: [
+"Phân cấp quản lý, đánh giá, phân loại tư tưởng quân nhân",
+"Dự báo tình hình tư tưởng quân nhân",
+"Phân cấp, đánh giá, phân loại tư tưởng quân nhân",
+"Định hướng tư tưởng"
+],
+correct: 0
+},
+{
+q: "Đồng chí cho biết Sư đoàn 324 được tuyên dương Danh hiệu Anh hùng LLVTND lần thứ hai vào ngày, tháng, năm nào?",
+answers: [
+"Ngày 25/01/1973",
+"Ngày 25/01/1983",
+"Ngày 25/01/1986",
+"Ngày 25/01/1988"
+],
+correct: 1
+},
+{
+q: "Đồng chí cho biết bước thứ hai trong quy trình chuẩn bị bài giảng theo Hướng dẫn số 1136/HD-TH ngày 28/4/2016 của Cục Tuyên huấn, Tổng cục Chính trị?",
+answers: [
+"Nghiên cứu tài liệu, xử lý thông tin phục vụ bài giảng",
+"Nghiên cứu tổng quát chủ đề bài giảng và đối tượng người học",
+"Tổng hợp, xử lý và phân loại thông tin, sắp xếp các thông tin đã thu thập theo mục đích sư phạm",
+"Soạn bài giảng"
+],
+correct: 0
+},
+{
+q: "Đồng chí theo Chủ tịch Hồ Chí Minh công tác tuyên truyền được hiểu như thế nào?",
+answers: [
+"“Tuyên truyền là đem một việc gì nói cho dân nhớ, dân hiểu, dân theo, dân làm. Nếu không đạt được mục tiêu đó thì tuyên truyền thất bại”.",
+"“Tuyên truyền là đem một việc gì nói cho dân theo, dân hiểu, dân nhớ, dân làm. Nếu không đạt được mục tiêu đó thì tuyên truyền thất bại”.",
+"“Tuyên truyền là đem một việc gì nói cho dân làm, dân hiểu, dân theo, dân nhớ. Nếu không đạt được mục tiêu đó thì tuyên truyền thất bại”.",
+"“Tuyên truyền là đem một việc gì nói cho dân hiểu, dân nhớ, dân theo, dân làm. Nếu không đạt được mục tiêu đó thì tuyên truyền thất bại”."
+],
+correct: 3
+},
+{
+q: "Đồng chí cho biết báo cáo viên bán chuyên trách ở cấp Trung đoàn do ai đảm nhiệm?",
+answers: [
+"Chủ nhiệm Chính trị. Trợ lý Tuyên huấn. Trợ lý CTQC",
+"Trợ lý Tuyên huấn. Trợ lý CTQC",
+"Chủ nhiệm Chính trị",
+"Trợ lý Tuyên huấn"
+],
+correct: 3
+},
+{
+q: "Đồng chí cho biết Nghị quyết 847-NQ/QUTW của Quân ủy Trung ương xác định bao nhiêu đặc trưng cơ bản của phẩm chất “Bộ đội Cụ Hồ”?",
+answers: [
+"3 đặc trưng",
+"4 đặc trưng",
+"5 đặc trưng",
+"6 đặc trưng"
+],
+correct: 2
+},
+{
+q: "Đồng chí cho biết lực lượng phối hợp của công tác quản lý tư tưởng quân nhân; nắm và định hướng dư luận trong QĐNDVN?",
+answers: [
+"Cấp ủy, chính quyền, đoàn thể địa phương, các tổ chức CT-XH, gia đình, người thân của quân nhân.",
+"Cấp ủy, chính quyền, đoàn thể địa phương, gia đình, bạn bè, người thân của quân nhân.",
+"Cấp ủy, chính quyền, đoàn thể địa phương, gia đình, người thân của quân nhân, các tổ chức quần chúng trong đơn vị.",
+"Cấp ủy, chính quyền, đoàn thể địa phương, gia đình, người thân của quân nhân."
+],
+correct: 3
+},
+{
+q: "Đồng chí cho biết Nhiệm vụ Phòng Hồ Chí Minh theo Quy chế tổ chức hoạt động của các thiết chế văn hóa trong Quân đội nhân dân Việt Nam?",
+answers: [
+"Hướng dẫn hoạt động các nhóm nghiệp vụ; hoạt động văn hóa - văn nghệ quần chúng và câu lạc bộ sở thích cho bộ đội. Phối hợp với cơ quan, đơn vị và các đoàn thể trên địa bàn đóng quân tổ chức giao lưu và các hoạt động văn hóa - văn nghệ.",
+"Tổ chức hoạt động các nhóm nghiệp vụ. Phối hợp với cơ quan, đơn vị và các đoàn thể trên địa bàn đóng quân tổ chức giao lưu và các hoạt động văn hóa - văn nghệ.",
+"Tổ chức hoạt động các nhóm nghiệp vụ; hoạt động văn hóa - văn nghệ quần chúng và câu lạc bộ sở thích cho bộ đội. Phối hợp với cơ quan, đơn vị và các đoàn thể trên địa bàn đóng quân tổ chức giao lưu và các hoạt động văn hóa - văn nghệ.",
+"Tổ chức hoạt động các nhóm nghiệp vụ; hoạt động văn hóa - văn nghệ quần chúng, TDTT và câu lạc bộ sở thích cho bộ đội. Phối hợp với cơ quan, đơn vị và các đoàn thể trên địa bàn đóng quân tổ chức giao lưu và các hoạt động văn hóa - văn nghệ."
+],
+correct: 2
+},
+{
+q: "Đồng chí cho biết phương châm của Đại hội đại biểu Đảng bộ Quân khu lần thứ XII nhiệm kỳ 2025-2030?",
+answers: [
+"“Đoàn kết - Mẫu mực - Kỷ cương - Đột phá - Phát triển”",
+"“Đoàn kết - Kỷ cương - Sáng tạo - Đột phá - Phát triển”",
+"“Đoàn kết - Dân chủ - Kỷ cương - Đổi mới - Phát triển”",
+"“Đoàn kết - Sáng tạo - Kỷ cương - Đột phá - Phát triển”"
+],
+correct: 2
+},
+{
+q: "Đồng chí cho biết Ngày Chính trị và văn hóa tinh thần ở cơ sở được quy định trong Hướng dẫn số 2779/HD-TH, ngày 20 tháng 9 năm 2016 của Cục Tuyên huấn, TCCT Quân đội nhân dân Việt Nam quy định có mấy nội dung, hình thức?",
+answers: [
+"3 nội dung, hình thức",
+"4 nội dung, hình thức",
+"5 nội dung, hình thức",
+"6 nội dung, hình thức"
+],
+correct: 1
+}
+];
+
+// Trộn câu hỏi nhưng giữ số thứ tự 11→20
+shuffle(questions2);
+
+// Hiển thị câu hỏi 11-20
+questions2.forEach((q,index)=>{
+  const div = document.createElement("div");
+  div.classList.add("question");
+
+  const title = document.createElement("p");
+  title.innerText = `Câu ${index+11}: ${q.q}`;
+  div.appendChild(title);
+
+  let answers = q.answers.map((a,i)=>({text:a,correct:i===q.correct,btn:null}));
+  shuffle(answers);
+
+  answers.forEach((ans,i)=>{
+    const btn = document.createElement("button");
+    btn.innerText = String.fromCharCode(65+i)+". "+ans.text;
+
+    btn.onclick = ()=>{
+      if(ans.correct){
+        btn.classList.add("correct");
+        btn.innerText = String.fromCharCode(65+i)+". "+ans.text+" ✅ Đúng";
+        answers.forEach(a=>a.btn.disabled=true);
+      } else {
+        btn.classList.add("wrong");
+        btn.innerText = String.fromCharCode(65+i)+". "+ans.text+" ❌ Sai";
+      }
+    };
+    ans.btn = btn;
+    div.appendChild(btn);
+  });
+
+  document.getElementById("quiz").appendChild(div);
+});
+</script>
+</body>
+</html>
