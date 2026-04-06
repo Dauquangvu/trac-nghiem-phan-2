@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="vi">
 <head>
@@ -9,8 +10,9 @@
 body {
     font-family: Arial;
     background: #f4f6f9;
+    margin: 0;
     padding: 20px;
-    font-size: 18px;
+    font-size: 18px; /* 🔥 thêm */
 }
 
 .container {
@@ -18,28 +20,61 @@ body {
     margin: auto;
 }
 
+h2 {
+    text-align: center;
+    font-size: 22px; /* 🔥 to hơn */
+}
+
 .question {
-    background: white;
+    background: #fff;
     padding: 15px;
-    margin-bottom: 20px;
     border-radius: 10px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    font-size: 17px; /* 🔥 thêm */
 }
 
 button {
     width: 100%;
-    padding: 12px;
-    margin: 5px 0;
-    font-size: 17px;
-    border-radius: 8px;
+    margin: 6px 0;
+    padding: 12px; /* 🔥 to nút */
     border: none;
+    border-radius: 8px;
+    text-align: left;
     background: #eef1f5;
+    transition: 0.3s;
+    font-size: 17px; /* 🔥 chữ to */
 }
 
-.correct { background: #c8f7c5; }
-.wrong { background: #f7c5c5; }
-
-.score { text-align: center; font-weight: bold; }
-#timer { color: red; }
+button:hover {
+    background: #dfe6ee;
+}
+.correct {
+    background: #c8f7c5 !important;
+    color: green;
+    font-weight: bold;
+}
+.wrong {
+    background: #f7c5c5 !important;
+    color: red;
+    font-weight: bold;
+}
+.score {
+    text-align: center;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+.progress {
+    background: #ddd;
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 20px;
+}
+.progress-bar {
+    height: 10px;
+    width: 0%;
+    background: #4CAF50;
+}
 </style>
 </head>
 
@@ -49,49 +84,17 @@ button {
 <h2>Bài trắc nghiệm</h2>
 
 <div class="score" id="score">Điểm: 0</div>
-<div class="score" id="timer">Thời gian: 00:00:00</div>
+
+<div class="progress">
+    <div class="progress-bar" id="progress"></div>
+</div>
 
 <div id="quiz"></div>
 </div>
 
-<!-- 🔊 ÂM THANH -->
-<audio id="sound-correct" src="https://www.soundjay.com/buttons/sounds/button-4.mp3"></audio>
-<audio id="sound-wrong" src="https://www.soundjay.com/buttons/sounds/button-10.mp3"></audio>
-
 <script>
 
-// 🔊 ÂM THANH
-const soundCorrect = document.getElementById("sound-correct");
-const soundWrong = document.getElementById("sound-wrong");
-
-// 👉 mở khóa âm thanh (QUAN TRỌNG CHO ĐIỆN THOẠI)
-document.body.addEventListener("click", () => {
-    soundCorrect.play().catch(()=>{});
-    soundWrong.play().catch(()=>{});
-}, { once: true });
-
-
-// ⏱️ TIMER 00:00:00
-let time = 0;
-
-function formatTime(t){
-    let h = Math.floor(t / 3600);
-    let m = Math.floor((t % 3600) / 60);
-    let s = t % 60;
-
-    return String(h).padStart(2,'0') + ":" +
-           String(m).padStart(2,'0') + ":" +
-           String(s).padStart(2,'0');
-}
-
-setInterval(() => {
-    time++;
-    document.getElementById("timer").innerText =
-        "Thời gian: " + formatTime(time);
-}, 1000);
-
-
-// 🔀 TRỘN
+// 🔀 Shuffle chuẩn
 function shuffle(array) {
     for (let i = array.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
@@ -100,132 +103,545 @@ function shuffle(array) {
 }
 
 let score = 0;
+let answered = 0;
 
-
-// =============================
-// 🔥 CHỈ SỬA ĐOẠN NÀY
-// =============================
+// 📌 DÁN CÂU HỎI VÀO ĐÂY
 const questions = [
+{
+q: "Câu 51: Đồng chí cho biết Khâu đột phá thứ Hai trong Nghị quyết lãnh đạo thực hiện nhiệm vụ năm 2026 của Đảng ủy Sư đoàn?",
+answers: [
+"A. Cải cách hành chính, chuyển đổi số và ứng dụng khoa học công nghệ.",
+"B. Đẩy mạnh cải cách hành chính, chuyển đổi số và ứng dụng khoa học công nghệ trong trong Sư đoàn.",
+"C. Nâng cao chất lượng thực hiện nhiệm vụ, đẩy mạnh chuyển đổi số và phong trào bình dân học vụ số trong Sư đoàn.",
+"D. Nâng cao chất lượng thực hiện nhiệm vụ, đẩy mạnh cải cách hành chính và phong trào bình dân học vụ số trong Sư đoàn."
+],
+correct: 0
+},
 
 {
-q: "Đồng chí cho biết Thủ đoạn chiến lược “diễn biến hòa bình” của các thế lực thù địch chống phá cách mạng Việt Nam là gì?",
+q: "Câu 52: Đồng chí cho biết theo Thông tư 118/2023/TT-BQP ngày 22/12/2023 Quy định và hướng dẫn thi đua, khen thưởng trong Quân đội nhân dân Việt Nam có bao nhiêu danh hiệu thi đua đối với tập thể và cá nhân?",
 answers: [
-"Chống phá trên lĩnh vực chính trị; chống phá trên lĩnh vực tư tưởng, văn hóa; chống phá trên lĩnh vực xã hội; chống phá trên lĩnh vực quốc phòng, an ninh; chống phá trên lĩnh vực đối ngoại",
-"Chống phá trên lĩnh vực chính trị; chống phá trên lĩnh vực kinh tế; chống phá trên lĩnh vực tư tưởng, văn hóa; chống phá trên lĩnh vực xã hội; chống phá trên lĩnh vực quốc phòng, an ninh",
-"Chống phá trên lĩnh vực chính trị; chống phá trên lĩnh vực kinh tế; chống phá trên lĩnh vực tư tưởng, văn hóa; chống phá trên lĩnh vực quốc phòng, an ninh; chống phá trên lĩnh vực đối ngoại",
-"Chống phá trên lĩnh vực chính trị; chống phá trên lĩnh vực kinh tế; chống phá trên lĩnh vực tư tưởng, văn hóa; chống phá trên lĩnh vực xã hội; chống phá trên lĩnh vực quốc phòng, an ninh; chống phá trên lĩnh vực đối ngoại"
+"A. Tập thể (06 hình thức); cá nhân (04 hình thức)",
+"B. Tập thể (07 hình thức); cá nhân (04 hình thức)",
+"C. Tập thể (07 hình thức); cá nhân (05 hình thức)",
+"D. Tập thể (08 hình thức); cá nhân (04 hình thức)"
 ],
 correct: 3
 },
 
 {
-q: "Đồng chí cho biết Nghị quyết Đại hội đại biểu toàn quốc lần thứ XIII của Đảng xác định mục tiêu cụ thể của nước ta đến năm 2025 là gì?",
+q: "Câu 53: Đồng chí cho biết đặc trưng thứ hai theo Nghị quyết số 847-NQ/QUTW ngày 28/12/2021 của Quân ủy Trung ương “Về phát huy phẩm chất “Bộ đội Cụ Hồ” kiên quyết chống chủ nghĩa cá nhân trong tình hình mới” là gì?",
 answers: [
-"Kỷ niệm 50 năm giải phóng hoàn toàn Miền Nam, thống nhất đất nước: Là nước đang phát triển, có công nghiệp hiện đại, có thu nhập trung bình thấp",
-"Kỷ niệm 50 năm giải phóng hoàn toàn Miền Nam, thống nhất đất nước: Là nước đang phát triển, có công nghiệp theo hướng hiện đại, vượt qua mức thu nhập trung bình thấp",
-"Kỷ niệm 50 năm giải phóng hoàn toàn Miền Nam, thống nhất đất nước: Là nước phát triển, có công nghiệp hiện đại, thu nhập trung bình cao",
-"Kỷ niệm 50 năm giải phóng hoàn toàn Miền Nam, thống nhất đất nước: Là nước đang phát triển, có công nghiệp theo hướng hiện đại, có mức thu nhập trung bình cao"
+"A. Tích cực huấn luyện, học tập, nghiên cứu nâng cao trình độ mọi mặt và kiến thức chuyên môn...",
+"B. Có tinh thần đổi mới, sáng tạo, dám nghĩ, dám nói, dám làm, dám chịu trách nhiệm...",
+"C. Tuyệt đối trung thành với Tổ quốc, với Đảng, Nhà nước và nhân dân...",
+"D. Có đạo đức cách mạng trong sáng, lối sống trung thực, khiêm tốn, giản dị..."
+],
+correct: 3
+},
+
+{
+q: "Câu 54: Đồng chí cho biết Khâu đột phá thứ Ba trong Nghị quyết lãnh đạo thực hiện nhiệm vụ năm 2026 của Đảng ủy Sư đoàn?",
+answers: [
+"A. Năng lực, trách nhiệm, tính tiền phong gương mẫu của cán bộ chủ trì.",
+"B. Nâng cao năng lực, trách nhiệm, tính tiền phong gương mẫu của cán bộ chủ trì.",
+"C. Nâng cao năng lực lãnh đạo, chỉ đạo của cấp ủy các cấp...",
+"D. Nâng cao năng lực lãnh đạo, sức chiến đấu của cấp ủy các cấp..."
 ],
 correct: 1
 },
 
 {
-q: "Đồng chí cho biết chức năng của công tác tuyên truyền miệng ?",
+q: "Câu 55: Đồng chí cho biết yêu cầu nắm tư tưởng quân nhân theo Quy chế công tác quản lý tư tưởng quân nhân; nắm và định hướng dư luận trong QĐNDVN?",
 answers: [
-"Phổ biến thông tin. Định hướng tư tưởng. Hướng dẫn hành động",
-"Phổ biến thông tin. Định hướng tư tưởng. Cổ vũ hành động",
-"Phổ biến thông tin. Định hướng nhận thức. Cổ vũ hành động",
-"Phổ biến thông tin. Định hướng nhận thức. Hướng dẫn hành động"
+"A. Thường xuyên, toàn diện, có trọng tâm, trọng điểm, thiết thực.",
+"B. Thường xuyên, liên tục, toàn diện, có trọng tâm, trọng điểm.",
+"C. Thường xuyên, toàn diện, có trọng tâm, trọng điểm.",
+"D. Thường xuyên, toàn diện, hiệu quả, có trọng tâm, trọng điểm, thiết thực."
+],
+correct: 0
+},
+
+{
+q: "Câu 56: Đồng chí cho biết cấu trúc của đề cương tuyên truyền gồm mấy phần?",
+answers: [
+"A. 02 phần",
+"B. 03 phần",
+"C. 04 phần",
+"D. 05 phần"
 ],
 correct: 1
 },
 
 {
-q: "Đồng chí cho biết Chỉ thị số 366/CT-ĐU của Ban Thường vụ Đảng ủy Sư đoàn về xây dựng “chi bộ bốn tốt”, “đảng bộ cơ sở bốn tốt\" xác định bao nhiêu nhiệm vụ, giải pháp?",
+q: "Câu 57: Đồng chí cho biết Dự thảo báo cáo chính trị tại đại hội lần thứ XIV của Đảng xác định bao nhiêu bài học kinh nghiệm qua 5 năm thực hiện nghị quyết Đại hội XIII?",
 answers: [
-"4 nhiệm vụ, giải pháp",
-"5 nhiệm vụ, giải pháp",
-"6 nhiệm vụ, giải pháp",
-"7 nhiệm vụ, giải pháp"
+"A. 5 bài học kinh nghiệm",
+"B. 6 bài học kinh nghiệm",
+"C. 7 bài học kinh nghiệm",
+"D. 8 bài học kinh nghiệm"
 ],
-correct: 1
+correct: 0
 },
 
 {
-q: "Đồng chí cho biết tên gọi Kết luận số 21-KL/TW của Ban Chấp hành Trung ương Đảng khóa XIII là gì?",
+q: "Câu 58: Đồng chí cho biết đặc trưng thứ nhất theo Nghị quyết số 847-NQ/QUTW ngày 28/12/2021 của Quân ủy Trung ương “Về phát huy phẩm chất “Bộ đội Cụ Hồ” kiên quyết chống chủ nghĩa cá nhân trong tình hình mới” là gì?",
 answers: [
-"Về đẩy mạnh xây dựng, chỉnh đốn đảng; kiên quyết ngăn chặn, đẩy lùi, xử lý nghiêm cán bộ, đảng viên suy thoái về tư tưởng chính trị, đạo đức, lối sống, biểu hiện “tự diễn biến”, “tự chuyển hoá”.",
-"Về đẩy mạnh xây dựng, chỉnh đốn đảng và hệ thống chính trị; ngăn chặn, đẩy lùi, xử lý nghiêm cán bộ, đảng viên suy thoái về tư tưởng chính trị, đạo đức, lối sống, biểu hiện “tự diễn biến”, “tự chuyển hoá”.",
-"Về đẩy mạnh xây dựng, chỉnh đốn đảng và hệ thống chính trị; kiên quyết ngăn chặn, đẩy lùi, xử lý nghiêm cán bộ, đảng viên suy thoái về tư tưởng chính trị, đạo đức, lối sống, biểu hiện “tự diễn biến”, “tự chuyển hoá”.",
-"Về đẩy mạnh xây dựng, chỉnh đốn đảng và hệ thống chính trị; kiên quyết đẩy lùi, xử lý nghiêm cán bộ, đảng viên suy thoái về tư tưởng chính trị, đạo đức, lối sống, biểu hiện “tự diễn biến”, “tự chuyển hoá”."
+"A. Tích cực huấn luyện, học tập, nghiên cứu nâng cao trình độ...",
+"B. Có tinh thần đổi mới, sáng tạo...",
+"C. Tuyệt đối trung thành với Tổ quốc, với Đảng, Nhà nước và nhân dân...",
+"D. Có đạo đức cách mạng trong sáng..."
 ],
 correct: 2
 },
 
 {
-q: "Đồng chí cho biết Quy định số 144-QĐ/TW ngày 09/5/2024 của Bộ Chính trị về chuẩn mực đạo đức cách mạng của cán bộ, đảng viên trong giai đoạn mới có mấy nội dung cơ bản?",
+q: "Câu 59: Đồng chí cho biết Kết luận số 21-KL/TW của Ban Chấp hành Trung ương Đảng khóa XIII xác định mấy nhiệm vụ, giải pháp?",
 answers: [
-"04 nội dung",
-"05 nội dung",
-"06 nội dung",
-"07 nội dung"
+"A. 5 nhiệm vụ, giải pháp",
+"B. 6 nhiệm vụ, giải pháp",
+"C. 7 nhiệm vụ, giải pháp",
+"D. 8 nhiệm vụ, giải pháp"
+],
+correct: 0
+},
+
+{
+q: "Câu 60: Đồng chí cho biết các hình thức cơ bản tuyên truyền miệng ở đơn vị cơ sở hiện nay?",
+answers: [
+"A. - Học tập, sinh hoạt chính trị... - Học tập, sinh hoạt của các tổ chức quần chúng...",
+"B. - Học tập, sinh hoạt chính trị... - Nghe nói chuyện thời sự... - Thông qua hoạt động văn hoá...",
+"C. - Học tập, sinh hoạt chính trị... - Học tập, sinh hoạt của các tổ chức quần chúng... - Nghe nói chuyện thời sự... - Thông qua hoạt động văn hoá...",
+"D. - Học tập, sinh hoạt chính trị... - Học tập, sinh hoạt của các tổ chức quần chúng... - Sinh hoạt Ngày Đảng..."
+],
+correct: 2
+},
+    {
+q: "Câu 61: Đồng chí cho biết Quy chế công tác quản lý tư tưởng quân nhân; nắm và định hướng dư luận trong QĐNDVN gồm bao nhiêu chương, điều?",
+answers: [
+"A. 4 chương, 14 điều",
+"B. 5 chương, 15 điều",
+"C. 5 chương, 14 điều",
+"D. 6 chương, 15 điều"
+],
+correct: 2
+},
+
+{
+q: "Câu 62: Đồng chí cho biết chuẩn mực thứ năm theo Chỉ thị số 855-CT/QUTW ngày 12/8/2019 của Thường vụ QUTW “Về đẩy mạnh thực hiện Cuộc vận động phát huy truyền thống, cống hiến tài năng, xứng danh “Bộ đội Cụ Hồ” thời kỳ mới” là gì?",
+answers: [
+"A. Đạo đức, lối sống trong sạch, lành mạnh",
+"B. Có văn hóa, tri thức khoa học, trình độ quân sự...",
+"C. Chăm lo xây dựng đoàn kết nội bộ tốt; tôn trọng, giúp đỡ...",
+"D. Bản lĩnh chính trị vững vàng, động cơ trong sáng..."
+],
+correct: 2
+},
+
+{
+q: "Câu 63: Đồng chí cho biết Nghị quyết 847-NQ/QUTW của Quân ủy Trung ương xác định bao nhiêu biểu hiện của chủ nghĩa cá nhân?",
+answers: [
+"A. 8 biểu hiện",
+"B. 9 biểu hiện",
+"C. 10 biểu hiện",
+"D. 11 biểu hiện"
+],
+correct: 2
+},
+
+{
+q: "Câu 64: Đồng chí cho biết Ngày truyền thống ngành Tuyên huấn Quân đội?",
+answers: [
+"A. 01/5/1947",
+"B. 11/5/1946",
+"C. 01/8/1930",
+"D. 15/10/1930"
 ],
 correct: 1
 },
 
 {
-q: "Đồng chí cho biết có mấy nguyên tắc tiến hành công tác tuyên truyền miệng?",
+q: "Câu 65: Đồng chí cho biết trước khi tuyên truyền miệng, cán bộ tuyên truyền cần chuẩn bị những nội dung nào?",
 answers: [
-"04 nhiệm vụ",
-"05 nhiệm vụ",
-"06 nhiệm vụ",
-"10 nhiệm vụ"
+"A. Chuẩn bị về nội dung. Chuẩn bị về thể chất, tinh thần...",
+"B. Chuẩn bị về nội dung. Chuẩn bị về vật chất bổ trợ...",
+"C. Chuẩn bị về con người. Chuẩn bị về nội dung...",
+"D. Chuẩn bị về con người. Chuẩn bị về nội dung..."
+],
+correct: 0
+},
+
+{
+q: "Câu 66: Đồng chí cho biết Quy định số 144-QĐ/TW của Bộ Chính trị về chuẩn mực đạo đức cách mạng của cán bộ, đảng viên trong giai đoạn mới ban hành ngày, tháng, năm nào?",
+answers: [
+"A. 19/5/2024",
+"B. 10/5/2024",
+"C. 09/5/2024",
+"D. 29/5/2024"
+],
+correct: 2
+},
+
+{
+q: "Câu 67: Đồng chí cho biết Chỉ thị số 366/CT-ĐU của Ban Thường vụ Đảng ủy Sư đoàn về xây dựng “chi bộ bốn tốt”, “đảng bộ cơ sở bốn tốt\" ban hành thời gian nào?",
+answers: [
+"A. 12/12/2022",
+"B. 03/01/2023",
+"C. 15/12/2022",
+"D. 13/01/2023"
 ],
 correct: 1
 },
 
 {
-q: "Đồng chí khái niệm của công tác tuyên truyền miệng là gì?",
+q: "Câu 68: Đồng chí cho biết Nghị quyết 847-NQ/QUTW của Quân ủy Trung ương xác định bao nhiêu quan điểm phát huy phẩm chất “Bộ đội Cụ Hồ”, kiên quyết chống chủ nghĩa cá nhân trong thời gian tới?",
 answers: [
-"Tuyên truyền miệng là một hình thức tuyên truyền được tiến hành thông qua sự giao tiếp trực tiếp giữa người nói (người tuyên truyền) với người nghe (đối tượng tuyên truyền).",
-"Tuyên truyền miệng là một hình thức tuyên truyền được tiến hành thông qua sự giao tiếp bằng lời nói trực tiếp giữa người nói (nhà tuyên truyền) với người nghe (đối tượng tuyên truyền).",
-"Tuyên truyền miệng là một hình thức tuyên truyền được tiến hành thông qua sự giao tiếp thực tiễn bằng lời nói trực tiếp giữa người nói (nhà tuyên truyền) với người nghe (đối tượng tuyên truyền).",
-"Tuyên truyền miệng là một hình thức tuyên truyền được tiến hành thông qua nói chuyện bằng lời nói trực tiếp giữa người nói (nhà tuyên truyền) với người nghe (đối tượng tuyên truyền)."
+"A. 3 quan điểm",
+"B. 4 quan điểm",
+"C. 5 quan điểm",
+"D. 6 quan điểm"
+],
+correct: 2
+},
+
+{
+q: "Câu 69: Đồng chí cho biết Nội dung giáo dục truyền thống ở đại đội?",
+answers: [
+"A. Giáo dục truyền thống của dân tộc; Đảng Cộng sản Việt Nam...",
+"B. Giáo dục truyền thống của dân tộc; Đảng Cộng sản Việt Nam; Quân đội nhân dân Việt Nam; của đơn vị.",
+"C. Giáo dục truyền thống của dân tộc; Đảng Cộng sản Việt Nam...",
+"D. Giáo dục truyền thống của dân tộc; Đảng Cộng sản Việt Nam..."
+],
+correct: 0
+},
+
+{
+q: "Câu 70: Đồng chí cho biết để hoàn thành một buổi tuyên truyền miệng người tuyên truyền (Báo cáo viên) phải trải qua các giai đoạn?",
+answers: [
+"A. Trước khi tuyên truyền, bắt đầu tuyên truyền, trong khi tuyên truyền.",
+"B. Trước khi tuyên truyền, bắt đầu tuyên truyền và kết thúc tuyên truyền.",
+"C. Trước khi tuyên truyền, bắt đầu tuyên truyền, trong khi tuyên truyền và kết thúc.",
+"D. Trước khi tuyên truyền, bắt đầu tuyên truyền, trong khi tuyên truyền và kết thúc. Định hướng sau tuyên truyền."
+],
+correct: 1
+},
+{
+q: "Câu 71: Đồng chí cho biết khái niệm về công tác tuyên truyền?",
+answers: [
+"A. Tuyên truyền là một trong những hình thái chủ yếu của công tác tư tưởng. Theo nghĩa rộng, tuyên truyền là hoạt động truyền bá những kiến thức, những giá trị tinh thần, tác động vào các đối tượng trong xã hội nhằm làm chuyển biến nhận thức, hình thành niềm tin, bồi dưỡng và xây dựng tình cảm, ý chí, cổ vũ và thôi thúc mọi người hành động một cách tự giác theo những yêu cầu, nhiệm vụ tuyên truyền đặt ra.",
+"B. Tuyên truyền là một trong những hình thái chủ yếu của công tác tư tưởng. Theo nghĩa rộng, tuyên truyền là hoạt động truyền bá những kiến thức, những giá trị tinh thần, tác động vào các đối tượng trong xã hội nhằm làm chuyển biến và nâng cao nhận thức, hình thành niềm tin, bồi dưỡng và xây dựng tình cảm, ý chí, cổ vũ và thôi thúc mọi người hành động một cách tự giác theo những yêu cầu, nhiệm vụ tuyên truyền đặt ra.",
+"C. Tuyên truyền là một trong những hình thái chủ yếu của công tác chính trị tư tưởng. Theo nghĩa rộng, tuyên truyền là hoạt động truyền bá những kiến thức, những giá trị tinh thần, tác động vào các đối tượng trong xã hội nhằm làm chuyển biến nhận thức, hình thành niềm tin, bồi dưỡng và xây dựng tình cảm, ý chí, cổ vũ và thôi thúc mọi người hành động một cách tự giác theo những yêu cầu, nhiệm vụ tuyên truyền đặt ra.",
+"D. Tuyên truyền là một trong những hình thái chủ yếu của công tác chính trị tư tưởng. Theo nghĩa rộng, tuyên truyền là hoạt động truyền bá những kiến thức, những giá trị tinh thần, tác động vào các đối tượng trong xã hội nhằm làm chuyển biến và nâng cao nhận thức, hình thành niềm tin, bồi dưỡng và xây dựng tình cảm, ý chí, cổ vũ và thôi thúc mọi người hành động một cách tự giác theo những yêu cầu, nhiệm vụ tuyên truyền đặt ra."
 ],
 correct: 1
 },
 
 {
-q: "Đồng chí cho biết chức năng Phòng Hồ Chí Minh theo Quy chế tổ chức hoạt động của các thiết chế văn hóa trong Quân đội nhân dân Việt Nam?",
+q: "Câu 72: Đồng chí cho biết tính chiến đấu của công tác tuyên truyền miệng là gì?",
 answers: [
-"Tổ chức các hoạt động văn hoá - văn nghệ phục vụ nhiệm vụ chính trị của đơn vị và nhu cầu đời sống văn hóa, tinh thần của bộ đội",
-"Hướng dẫn, tổ chức các hoạt động văn hoá - văn nghệ phục vụ nhiệm vụ chính trị của đơn vị và nhu cầu đời sống văn hóa, tinh thần của bộ đội.",
-"Chỉ đạo, tổ chức các hoạt động văn hoá - văn nghệ phục vụ nhiệm vụ chính trị của đơn vị và nhu cầu đời sống văn hóa, tinh thần của bộ đội.",
-"Tham gia, tổ chức, hướng dẫn các hoạt động văn hoá - văn nghệ phục vụ nhiệm vụ chính trị của đơn vị và nhu cầu đời sống văn hóa, tinh thần của bộ đội."
+"A. Tính chiến đấu thể hiện trước tiên ở người cán bộ tuyên truyền là bản lĩnh chính trị vững vàng và sự nhạy bén, cảnh giác về chính trị để sớm nhận thức rõ đúng, sai, phải, trái, khẳng định mạnh mẽ cái đúng, cái tốt để bảo vệ và xây dựng, chỉ rõ cái sai, cái xấu để kịp thời đấu tranh phê phán, khắc phục. Tính chiến đấu trong công tác tuyên truyền miệng còn thể hiện ở tinh thần cách mạng tiến công, đấu tranh kiên quyết, kịp thời, chống lại mọi âm mưu, thủ đoạn, các luận điệu phản tuyên truyền của các thế lực thù địch chống phá cách mạng nước ta trên các lĩnh vực chính trị, tư tưởng, văn hóa, chống lại các quan điểm, khuynh hướng sai lầm của các phần tử cơ hội về chính trị, thoái hóa, biến chất, kiên quyết bảo vệ quan điểm, đường lối đúng đắn của Đảng và Nhà nước ta ở mọi nơi, mọi lúc.",
+"B. Tính chiến đấu thể hiện sự nhạy bén, cảnh giác về chính trị để sớm nhận thức rõ đúng, sai, phải, trái...",
+"C. Tính chiến đấu thể hiện trước tiên ở người cán bộ tuyên truyền là bản lĩnh chính trị vững vàng...",
+"D. Tất cả đáp án A, B, C."
+],
+correct: 0
+},
+
+{
+q: "Câu 73: Đồng chí cho biết Đảng ta xác định mấy mục tiêu bảo vệ Tổ quốc Việt Nam xã hội chủ nghĩa trong tình hình mới?",
+answers: [
+"A. 3 mục tiêu",
+"B. 4 mục tiêu",
+"C. 5 mục tiêu",
+"D. 6 mục tiêu"
+],
+correct: 3
+},
+
+{
+q: "Câu 74: Đồng chí cho biết báo cáo viên chuyên trách được tổ chức ở cấp nào?",
+answers: [
+"A. Cấp toàn quân có Phòng Báo cáo viên thuộc Cục Tuyên huấn... quân chủng, binh chủng, học viện, nhà trường...",
+"B. Cấp toàn quân có Phòng Báo cáo viên thuộc Cục Tuyên huấn... quân khu, quân đoàn, quân chủng, Bộ đội Biên phòng, binh chủng, học viện, nhà trường...",
+"C. Có thêm cấp sư đoàn...",
+"D. Có thêm cấp trung đoàn..."
 ],
 correct: 1
 },
 
 {
-q: "Đồng chí cho biết báo cáo viên kiêm nhiệm ở cấp tiểu đoàn, đại đội và đương đương là ai?",
+q: "Câu 75: Đồng chí cho biết nội dung thông báo chính trị - thời sự tuần kết cấu như thế nào?",
 answers: [
-"Chính trị viên đảm nhiệm",
-"Chính trị viên hoặc Chính trị viên phó đảm nhiệm",
-"Bí thư Đảng ủy (chi bộ) đảm nhiệm",
-"Bí thư hoặc phó bí thư Đảng ủy (chi bộ) đảm nhiệm"
+"A. Có khu vực",
+"B. Có đủ nhiều phần",
+"C. Tình hình thế giới; tình hình trong nước; tình hình toàn quân; đơn vị; định hướng tư tưởng",
+"D. Thiếu nội dung"
+],
+correct: 2
+},
+
+{
+q: "Câu 76: Đồng chí cho biết chuẩn mực thứ tư theo Chỉ thị 855 là gì?",
+answers: [
+"A. Đạo đức, lối sống trong sạch",
+"B. Trình độ khoa học",
+"C. Thực hành dân chủ, kỷ luật tự giác, nghiêm minh",
+"D. Bản lĩnh chính trị"
+],
+correct: 2
+},
+
+{
+q: "Câu 77: Đồng chí cho biết chế độ tập huấn báo cáo viên?",
+answers: [
+"A. Toàn quân 2 năm một lần do Cục Tuyên huấn tổ chức...",
+"B. Sai",
+"C. Sai",
+"D. Sai"
+],
+correct: 0
+},
+
+{
+q: "Câu 78: Đồng chí cho biết các chỉ tiêu huấn luyện được xác định trong Nghị quyết năm 2026?",
+answers: [
+"A. Sai",
+"B. Sai",
+"C. Nội dung đầy đủ đúng chuẩn chỉ tiêu",
+"D. Sai"
+],
+correct: 2
+},
+
+{
+q: "Câu 79: Đồng chí cho biết nhiệm vụ thứ ba của Quân đội là gì?",
+answers: [
+"A. Sai",
+"B. Sai",
+"C. Tích cực tham gia lao động sản xuất, góp phần phát triển kinh tế, văn hóa, xã hội...",
+"D. Sai"
+],
+correct: 2
+},
+
+{
+q: "Câu 80: Đồng chí cho biết một số chỉ tiêu công tác hậu cần?",
+answers: [
+"A. Bảo đảm đủ 100% nhu cầu rau xanh, thịt... quân số khỏe đạt trên 98,5%",
+"B. Sai",
+"C. Sai",
+"D. Sai"
+],
+correct: 0
+},
+  {
+q: "Câu 81: Đồng chí cho biết Nghị quyết Đại hội đại biểu toàn quốc lần thứ XIII của Đảng xác định nền kinh tế thị trường định hướng xã hội chủ nghĩa của Việt Nam là?",
+answers: [
+"A. Đó là nền kinh tế thị trường định hướng XHCN, hội nhập quốc tế sâu rộng, vận hành đầy đủ, đồng bộ theo các quy luật của kinh tế thị trường, có sự quản lý của Nhà nước pháp quyền XHCN, do Đảng Cộng sản Việt Nam lãnh đạo; vì mục tiêu “dân giàu, nước mạnh, dân chủ, công bằng, văn minh” phù hợp với từng giai đoạn phát triển của đất nước.",
+"B. Đó là nền kinh tế thị trường hiện đại, hội nhập quốc tế, vận hành đầy đủ, đồng bộ theo các quy luật của kinh tế thị trường, có sự quản lý của Nhà nước pháp quyền XHCN, do Đảng Cộng sản Việt Nam lãnh đạo; bảo đảm định hướng XHCN vì mục tiêu “dân giàu, nước mạnh, dân chủ, công bằng, văn minh” phù hợp với từng giai đoạn phát triển của đất nước.",
+"C. Đó là nền kinh tế theo định hướng XHCN, hội nhập quốc tế, vận hành đầy đủ, đồng bộ theo các quy luật của kinh tế thị trường, có sự quản lý của Nhà nước pháp quyền XHCN; bảo đảm định hướng XHCN vì mục tiêu “dân giàu, nước mạnh, dân chủ, công bằng, văn minh” phù hợp với từng giai đoạn phát triển của đất nước.",
+"D. Đó là nền kinh tế thị trường định hướng XHCN, hội nhập quốc tế sâu rộng, vận hành đầy đủ, đồng bộ theo các quy luật của kinh tế thị trường, có sự quản lý của Nhà nước pháp quyền XHCN, do Đảng Cộng sản Việt Nam lãnh đạo; vì mục tiêu “dân giàu, nước mạnh, dân chủ, công bằng, văn minh” phù hợp với từng giai đoạn phát triển của đất nước."
 ],
 correct: 1
+},
+{
+q: "Câu 82: Đồng chí cho biết chế độ sơ kết, tổng kết rút kinh nghiệm cấp Trung đoàn (tương đương) theo Quy chế công tác quản lý tư tưởng quân nhân; nắm và định hướng dư luận trong QĐNDVN được thực hiện như thế nào?",
+answers: [
+"A. Một tháng một lần",
+"B. Ba tháng một lần",
+"C. Sáu tháng một lần",
+"D. Một năm một lần"
+],
+correct: 1
+},
+{
+q: "Câu 83: Đồng chí cho biết theo Quyết định số 2223/QĐ-CT ngày 24/12/2021 của TCCT “về việc ban hành Quy chế tổ chức hoạt động của các thiết chế văn hóa trong Quân đội Nhân dân Việt Nam” các nhóm nghiệp vụ hoạt động phòng Hồ Chí Minh gồm?",
+answers: [
+"A. Nhóm thông tin, tuyên truyền; nhóm hoạt động sách, báo; nhóm hoạt động văn nghệ; nhóm giáo dục; nhóm hoạt động môi trường văn hóa, thể thao, vui chơi, giải trí.",
+"B. Nhóm thông tin, tuyên truyền cổ động; nhóm hoạt động sách, báo; nhóm hoạt động văn nghệ; nhóm giáo dục truyền thống; nhóm hoạt động thể thao, vui chơi, giải trí.",
+"C. Nhóm thông tin, tuyên truyền cổ động; nhóm hoạt động sách, báo; nhóm hoạt động văn nghệ; nhóm giáo dục truyền thống; nhóm hoạt động môi trường văn hóa, thể thao, vui chơi, giải trí.",
+"D. Nhóm thông tin, tuyên truyền cổ động; nhóm hoạt động sách, báo; nhóm hoạt động văn nghệ; nhóm hoạt động môi trường văn hóa, thể thao, vui chơi, giải trí."
+],
+correct: 2
+},
+{
+q: "Câu 84: Đồng chí cho biết theo quy định tại Hướng dẫn số 1771/HD-CT, ngày 17/6/2016 của Cục Tuyên huấn/TCCT, nội dung thông báo chính trị- thời sự tuần được quy định như thế nào?",
+answers: [
+"A. Nội dung thông báo chính trị thời sự tuần do người được phân công trực tiếp chuẩn bị. Căn cứ vào bản tin đọc chậm lúc 23 giờ 00 phút thứ Sáu hàng tuần trên VOV1; tổng hợp tin hàng tuần trên báo QĐND, Báo Nhân dân, truyền hình....",
+"B. Nội dung thông báo chính trị thời sự tuần do người được phân công trực tiếp chuẩn bị. Căn cứ vào bản tin đọc chậm lúc 22 giờ 30 phút thứ Bảy hàng tuần trên VOV1; tổng hợp tin hàng tuần trên báo QĐND, Báo Nhân dân, truyền hình...",
+"C. Nội dung thông báo chính trị thời sự tuần do người được phân công trực tiếp chuẩn bị. Căn cứ vào bản tin đọc chậm lúc 23 giờ 00 phút thứ Năm hàng tuần trên VOV1; tổng hợp tin hàng tuần trên báo QĐND, Báo Nhân dân, truyền hình....",
+"D. Nội dung thông báo chính trị thời sự tuần do người được phân công trực tiếp chuẩn bị. Căn cứ vào bản tin đọc chậm lúc 22 giờ 30 phút Chủ nhật hàng tuần trên VOV1; tổng hợp tin hàng tuần trên báo QĐND, Báo Nhân dân, truyền hình..."
+],
+correct: 3
+},
+{
+q: "Câu 85: Đồng chí cho biết Kết luận số 21-KL/TW của Ban Chấp hành Trung ương ban hành ngày, tháng năm nào?",
+answers: [
+"A. 25/10/2020",
+"B. 25/11/2020",
+"C. 25/10/2021",
+"D. 25/11/2021"
+],
+correct: 2
+},
+{
+q: "Câu 86: Đồng chí cho biết theo Kết luận số 01-KL/TW ngày 18/5/2021, để việc thực hiện Chỉ thị 05 của Bộ Chính trị về học tập và làm theo tư tưởng, đạo đức, phong cách Hồ Chí Minh thời gian tới đạt hiệu quả thiết thực cần thực hiện những nội dung nào?",
+answers: [
+"A. Tiếp tục nâng cao nhận thức cho cán bộ, đảng viên về nội dung, giá trị và ý nghĩa to lớn của tư tưởng, đạo đức, phong cách Hồ Chí Minh.",
+"B. Kết hợp chặt chẽ giữa học tập với làm theo tư tưởng, đạo đức, phong cách Hồ Chí Minh trong thực hiện nhiệm vụ chính trị của mỗi địa phương, đơn vị và công tác xây dựng, chỉnh đốn Đảng.",
+"C. Đổi mới mạnh mẽ nội dung, phương pháp, hình thức học tập, tuyên truyền về tư tưởng, đạo đức, phong cách Hồ Chí Minh trong cán bộ, đảng viên và nhân dân.",
+"D. Học tập, làm theo Bác và nêu gương của cán bộ, đảng viên"
+],
+correct: 3
+},
+{
+q: "Câu 87: Sư đoàn 324 có bao nhiêu tập thể, cá nhân được Đảng, Nhà nước tuyên dương Danh hiệu Anh hùng LLVT nhân dân?",
+answers: [
+"A. Sư đoàn, 3 trung đoàn, 5 tiểu đoàn, 4 đại đội, 2 đội cơ sở và 11 cán bộ, chiến sĩ.",
+"B. Sư đoàn, 3 trung đoàn, 5 tiểu đoàn, 4 đại đội, 2 đội cơ sở và 12 cán bộ, chiến sĩ.",
+"C. Sư đoàn, 3 trung đoàn, 6 tiểu đoàn, 4 đại đội, 2 đội cơ sở và 11 cán bộ, chiến sĩ.",
+"D. Sư đoàn, 3 trung đoàn, 6 tiểu đoàn, 4 đại đội, 2 đội cơ sở và 12 cán bộ, chiến sĩ."
+],
+correct: 3
+},
+{
+q: "Câu 88: Đồng chí cho biết chuẩn mực thứ ba theo Chỉ thị số 855-CT/QUTW ngày 12/8/2019 của Thường vụ QUTW “Về đẩy mạnh thực hiện Cuộc vận động phát huy truyền thống, cống hiến tài năng, xứng danh “Bộ đội Cụ Hồ” thời kỳ mới” là gì?",
+answers: [
+"A. Đạo đức, lối sống trong sạch, lành mạnh",
+"B. Có văn hóa, tri thức khoa học, trình độ quân sự, năng lực, phương pháp, tác phong công tác và sức khỏe tốt đáp ứng yêu cầu nhiệm vụ",
+"C. Thực hành dân chủ, kỷ luật tự giác, nghiêm minh",
+"D. Bản lĩnh chính trị vững vàng, động cơ trong sáng, trách nhiệm cao"
+],
+correct: 1
+},
+{
+q: "Câu 89: Đồng chí cho biết theo Hướng dẫn 1771/HD-TH ngày 17/4/2016 của Cục Tuyên huấn về Thực hiện chế độ thông báo chính trị - thời sự, đọc báo, nghe đài, xem truyền hình trong quân đội, đối tượng được nghe thông báo chính trị - thời sự tuần gồm?",
+answers: [
+"A. Sĩ quan, quân nhân chuyên nghiệp, hạ sĩ quan, binh sĩ, công nhân và viên chức quốc phòng, lao động hợp đồng.",
+"B. Sĩ quan, quân nhân chuyên nghiệp.",
+"C. Sĩ quan, quân nhân chuyên nghiệp, hạ sĩ quan, binh sĩ.",
+"D. Hạ sĩ quan, binh sĩ, công nhân và viên chức quốc phòng."
+],
+correct: 0
+},
+{
+q: "Câu 90: Đồng chí cho biết theo Nghị quyết số 847-NQ/QUTW ngày 28/12/2021, nội dung thực hiện tốt phương châm: “Trên làm gương mẫu mực, dưới tích cực làm theo” nằm ở quan điểm thứ mấy?",
+answers: [
+"A. Quan điểm thứ hai",
+"B. Quan điểm thứ ba",
+"C. Quan điểm thứ tư",
+"D. Quan điểm thứ năm"
+],
+correct: 2
+},
+    {
+q: "Câu 91: Đồng chí cho biết chế độ báo cáo, thông báo cấp Trung đoàn theo Quy chế công tác quản lý tư tưởng quân nhân; nắm và định hướng dư luận trong QĐNDVN?",
+answers: [
+"A. Cơ quan chính trị tổng hợp, báo cáo tình hình tư tưởng, dư luận với cơ quan chính trị cấp trên và thông báo đến cấp dưới theo quy định.",
+"B. Chính ủy tổng hợp, báo cáo tình hình tư tưởng, dư luận với cấp ủy cấp mình, cơ quan chính trị cấp trên và thông báo đến cấp dưới theo quy định.",
+"C. Cơ quan chính trị báo cáo tình hình tư tưởng, dư luận với cấp ủy cấp mình, cơ quan chính trị cấp trên và thông báo đến cấp dưới theo quy định.",
+"D. Chính ủy (hoặc cơ quan chính trị) tổng hợp, báo cáo tình hình tư tưởng, dư luận với cấp ủy cấp mình, cơ quan chính trị cấp trên và thông báo đến cấp dưới theo quy định."
+],
+correct: 3
+},
+{
+q: "Câu 92: Đồng chí cho biết theo Thông tư 118/2023/TT-BQP ngày 22/12/2023 Quy định và hướng dẫn thi đua, khen thưởng trong Quân đội nhân dân Việt Nam chế độ kiểm tra, chấm điểm ở các cấp như thế nào?",
+answers: [
+"A. Cấp Sư đoàn mỗi quý 01 lần; cấp Trung đoàn mỗi tháng 01 lần; cấp Tiểu đoàn và tương đương mỗi tuần 01 lần; cấp đại đội và tương đương kiểm tra, chấm điểm mỗi tuần 2 lần.",
+"B. Cấp Sư đoàn mỗi quý 01 lần; cấp Trung đoàn mỗi tháng 01 lần; cấp Tiểu đoàn và tương đương mỗi tuần 01 lần; cấp đại đội và tương đương kiểm tra, chấm điểm mỗi tuần 3 lần.",
+"C. Cấp Sư đoàn mỗi quý 01 lần; cấp Trung đoàn mỗi tháng 01 lần; cấp Tiểu đoàn và tương đương mỗi tuần 01 lần; cấp đại đội và tương đương kiểm tra, chấm điểm hằng ngày.",
+"D. Cấp Sư đoàn mỗi quý 01 lần; cấp Trung đoàn mỗi tháng 01 lần; cấp Tiểu đoàn và tương đương mỗi tuần 02 lần; cấp đại đội và tương đương kiểm tra, chấm điểm hằng ngày."
+],
+correct: 2
+},
+{
+q: "Câu 93: Đồng chí cho biết Nghị quyết số 847-NQ/QUTW ngày 28/12/2021 xác định bao nhiêu nhiệm vụ, giải pháp chủ yếu?",
+answers: [
+"A. 4 nhiệm vụ, giải pháp",
+"B. 5 nhiệm vụ, giải pháp",
+"C. 6 nhiệm vụ, giải pháp",
+"D. 10 nhiệm vụ, giải pháp"
+],
+correct: 2
+},
+{
+q: "Câu 94: Đồng chí cho biết chuẩn mực thứ nhất theo Chỉ thị số 855-CT/QUTW ngày 12/8/2019 của Thường vụ QUTW “Về đẩy mạnh thực hiện Cuộc vận động phát huy truyền thống, cống hiến tài năng, xứng danh “Bộ đội Cụ Hồ” thời kỳ mới” là gì?",
+answers: [
+"A. Đạo đức, lối sống trong sạch, lành mạnh",
+"B. Có văn hóa, tri thức khoa học, trình độ quân sự, năng lực, phương pháp, tác phong công tác và sức khỏe tốt đáp ứng yêu cầu nhiệm vụ",
+"C. Thực hành dân chủ, kỷ luật tự giác, nghiêm minh",
+"D. Bản lĩnh chính trị vững vàng, động cơ trong sáng, trách nhiệm cao"
+],
+correct: 3
+},
+{
+q: "Câu 95: Đồng chí cho biết Nghị quyết số 847-NQ/QUTW của Quân ủy Trung ương về vấn đề gì?",
+answers: [
+"A. Về học tập và làm theo tư tưởng, đạo đức, phong cách Hồ Chí Minh, kiên quyết chống chủ nghĩa cá nhân trong tình hình mới.",
+"B. Về đẩy mạnh học tập và làm theo tư tưởng, đạo đức, phong cách Hồ Chí Minh trong giai đoạn mới.",
+"C. Về phát huy phẩm chất “Bộ đội Cụ Hồ”, kiên quyết chống chủ nghĩa cá nhân trong tình hình mới.",
+"D. Về phát huy phẩm chất “Bộ đội Cụ Hồ”, kiên quyết chống chủ nghĩa cá nhân."
+],
+correct: 2
+},
+{
+q: "Câu 96: Đồng chí cho biết theo Quy chế Giáo dục chính trị trong QĐND và Dân quân tự vệ Việt Nam (Quy chế 438), cấp tiểu đoàn, đại đội độc lập và tương đương, chế độ thông báo chính trị - thời sự tuần được thực hiện vào thời điểm nào? Do ai thông báo?",
+answers: [
+"A. Ngay sau lễ chào cờ, do chính trị viên (chính trị viên phó) trực tiếp thông báo.",
+"B. Ngay sau lễ chào cờ, do tổ tuyên truyền trực tiếp thông báo.",
+"C. Ngay sau khi chào cờ, nhận xét tuần, trước khi duyệt đội ngũ, do chính trị viên trực tiếp thông báo.",
+"D. Ngay sau khi chào cờ, nhận xét tuần, trước khi duyệt đội ngũ, do chính trị viên (chính trị viên phó) trực tiếp thông báo."
+],
+correct: 3
+},
+{
+q: "Câu 97: Đồng chí cho biết các hình thức tiến hành công tác tư tưởng trong Quân đội?",
+answers: [
+"A. Công tác GDCT; công tác tuyên truyền cổ động; công tác thi đua, khen thưởng, công tác văn hóa quần chúng; công tác xây dựng môi trường văn hóa; công tác xuất bản báo chí",
+"B. Công tác GDCT; công tác tuyên truyền, công tác cổ động; công tác văn hóa quần chúng; công tác xây dựng môi trường văn hóa; công tác xuất bản báo chí",
+"C. Công tác GDCT; công tác tuyên truyền cổ động; công tác văn hóa quần chúng; công tác xây dựng môi trường văn hóa; công tác xuất bản báo chí",
+"D. Công tác GDCT; công tác tuyên truyền cổ động; công tác khen thưởng, công tác văn hóa quần chúng; công tác xây dựng môi trường văn hóa; công tác xuất bản báo chí"
+],
+correct: 2
+},
+{
+q: "Câu 98: Đồng chí cho biết quân nhân có mấy trách nhiệm theo Quy chế công tác quản lý tư tưởng quân nhân; nắm và định hướng dư luận trong QĐNDVN?",
+answers: [
+"A. 4 trách nhiệm",
+"B. 5 trách nhiệm",
+"C. 6 trách nhiệm",
+"D. 7 trách nhiệm"
+],
+correct: 0
+},
+{
+q: "Câu 99: Mục tiêu cơ bản của chiến lược “Diễn biến hòa bình” của chủ nghĩa đế quốc và các thế lực thù địch đối với Việt Nam là?",
+answers: [
+"A. Nhằm xóa bỏ vai trò lãnh đạo của Đảng Cộng sản Việt Nam, xóa bỏ chủ nghĩa xã hội, xóa bỏ độc lập dân tộc của Việt Nam và buộc Việt Nam đi theo con đường tư bản chủ nghĩa.",
+"B. Xóa bỏ chủ nghĩa Mác-Lênin, tư tưởng Hồ Chí Minh, xóa bỏ vai trò lãnh đạo của Đảng Cộng sản Việt Nam, xóa bỏ chủ nghĩa xã hội, xóa bỏ độc lập dân tộc của Việt Nam và buộc Việt Nam đi theo con đường tư bản chủ nghĩa.",
+"C. Xóa bỏ vai trò lãnh đạo của Đảng Cộng sản Việt Nam, thực hiện “đa nguyên chính trị”, “đa đảng đối lập”, xóa bỏ chủ nghĩa xã hội, xóa bỏ độc lập dân tộc của Việt Nam và buộc Việt Nam đi theo con đường tư bản chủ nghĩa.",
+"D. Nhằm xóa bỏ vai trò lãnh đạo của Đảng Cộng sản Việt Nam, xóa bỏ chủ nghĩa xã hội, xóa bỏ độc lập dân tộc, thống nhất toàn vẹn lãnh thổ của Việt Nam và buộc Việt Nam đi theo con đường tư bản chủ nghĩa."
+],
+correct: 0
+},
+{
+q: "Câu 100: Đồng chí cho biết theo Quy chế 775, cấp Tiểu đội, trung đội, đại đội (tương đương) đánh giá, phân tư tưởng quân nhân như thế nào?",
+answers: [
+"A. Cấp tiểu đội: hằng ngày. Cấp Trung đội hằng tuần. Cấp Đại đội hằng tháng",
+"B. Cấp tiểu đội: hằng tuần. Cấp Trung đội hằng tháng. Cấp Đại đội hằng năm",
+"C. Cấp tiểu đội: hằng ngày. Cấp Trung đội hằng ngày. Cấp Đại đội hằng tuần",
+"D. Cấp tiểu đội: hằng tuần. Cấp Trung đội hằng tuần. Cấp Đại đội hằng tháng"
+],
+correct: 3
 }
-
 ];
-// =============================
 
-
-// 🔀 TRỘN CÂU HỎI
+// 🔀 Trộn câu hỏi
 shuffle(questions);
 
 const quizDiv = document.getElementById("quiz");
 
+// 👉 Render câu hỏi
 questions.forEach((q, index) => {
 
     const div = document.createElement("div");
@@ -235,6 +651,7 @@ questions.forEach((q, index) => {
     title.innerHTML = "<b>Câu " + (index + 1) + ":</b> " + q.q;
     div.appendChild(title);
 
+    // 👉 GẮN ĐÚNG/SAI + TRỘN ĐÁP ÁN
     let answers = q.answers.map((a,i)=>({
         text: a,
         correct: i === q.correct
@@ -252,28 +669,33 @@ questions.forEach((q, index) => {
             if(div.classList.contains("done")) return;
             div.classList.add("done");
 
-            if(ans.correct){
-                soundCorrect.currentTime = 0;
-                soundCorrect.play();
+            answered++;
 
+            if(ans.correct){
                 btn.classList.add("correct");
+                btn.innerText += " ✅";
                 score++;
             } else {
-                soundWrong.currentTime = 0;
-                soundWrong.play();
-
                 btn.classList.add("wrong");
+                btn.innerText += " ❌";
 
+                // 👉 HIỆN ĐÁP ÁN ĐÚNG
                 const buttons = div.querySelectorAll("button");
                 answers.forEach((a, idx) => {
                     if(a.correct){
                         buttons[idx].classList.add("correct");
+                        buttons[idx].innerText += " ⭐";
                     }
                 });
             }
 
+            // 👉 CẬP NHẬT ĐIỂM
             document.getElementById("score").innerText =
                 "Điểm: " + score + "/" + questions.length;
+
+            // 👉 PROGRESS BAR
+            document.getElementById("progress").style.width =
+                (answered / questions.length * 100) + "%";
         };
 
         div.appendChild(btn);
